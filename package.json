@@ -6,7 +6,7 @@
     "caliper": "bin/caliper"
   },
   "scripts": {
-    "prepublish": "grunt coffee"
+    "prepublish": "grunt coffee",
     "start" : "supervisor lib/app.js"
   },
   "main" : "lib/app.js",

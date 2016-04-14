@@ -46,8 +46,9 @@ symbDb = new SymbolDatabase
 webhook = new WebHook(symbDb)
 
 startServer = () ->
-  port = process.env.OPENSHIFT_NODEJS_PORT ? process.env.CALIPER_SERVER_PORT ? 80
-  app.listen port
+  ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1"
+  port = process.env.OPENSHIFT_NODEJS_PORT ? 80
+  app.listen ipaddress, port
   console.log "Caliper started!"
   console.log "Listening on port #{port}"
   console.log "Using random admin password: #{secret_admin_password}" if secret_admin_password != process.env.CALIPER_ADMIN_PASSWORD

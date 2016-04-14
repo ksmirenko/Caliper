@@ -16,9 +16,9 @@ symbols = require './symbols'
 GitHub        = require 'github-releases'
 
 # THIS SHOULD BE CHANGED BEFORE RUNNING CALIPER
-secret_session_string = process.env.MINI_BREAKPAD_SERVER_SECRET or randomstring.generate()
-secret_admin_password = process.env.MINI_BREAKPAD_ADMIN_PASSWORD or randomstring.generate()
-api_key = process.env.MINI_BREAKPAD_API_KEY or randomstring.generate()
+secret_session_string = process.env.CALIPER_SERVER_SECRET or randomstring.generate()
+secret_admin_password = process.env.CALIPER_ADMIN_PASSWORD or randomstring.generate()
+api_key = process.env.CALIPER_API_KEY or randomstring.generate()
 
 # TODO change this to hit a database of users
 # this is very temporary. just to get basic auth off the ground
@@ -46,12 +46,13 @@ symbDb = new SymbolDatabase
 webhook = new WebHook(symbDb)
 
 startServer = () ->
-  port = process.env.MINI_BREAKPAD_SERVER_PORT ? 80
+  port = process.env.OPENSHIFT_NODEJS_PORT ? process.env.CALIPER_SERVER_PORT ? 80
   app.listen port
+  console.log "Caliper started!"
   console.log "Listening on port #{port}"
-  console.log "Using random admin password: #{secret_admin_password}" if secret_admin_password != process.env.MINI_BREAKPAD_ADMIN_PASSWORD
-  console.log "Using random api_key: #{api_key}" if api_key != process.env.MINI_BREAKPAD_API_KEY
-  console.log "Using provided github server token" if process.env.MINI_BREAKPAD_SERVER_TOKEN
+  console.log "Using random admin password: #{secret_admin_password}" if secret_admin_password != process.env.CALIPER_ADMIN_PASSWORD
+  console.log "Using random api_key: #{api_key}" if api_key != process.env.CALIPER_API_KEY
+  console.log "Using provided github server token" if process.env.CALIPER_SERVER_TOKEN
 
 db.on 'load', ->
   console.log "crash db ready"
@@ -86,7 +87,7 @@ app.get '/fetch', (req, res, next) ->
 
   github = new GitHub
     repo: req.query.project
-    token: process.env.MINI_BREAKPAD_SERVER_TOKEN
+    token: process.env.CALIPER_SERVER_TOKEN
 
   processRel = (rel, rest) ->
     console.log "Processing symbols from #{rel.name}..."
@@ -123,8 +124,8 @@ app.post '/symbol_upload', isLoggedIn, (req, res, next) ->
     return res.end()
 
 root =
-  if process.env.MINI_BREAKPAD_SERVER_ROOT?
-    "#{process.env.MINI_BREAKPAD_SERVER_ROOT}/"
+  if process.env.CALIPER_SERVER_ROOT?
+    "#{process.env.CALIPER_SERVER_ROOT}/"
   else
     ''
 app.post "/login", passport.authenticate("local", successRedirect:"/#{root}", failureRedirect:"/login_page")
@@ -146,3 +147,4 @@ app.get "/#{root}view/:id", isLoggedIn, (req, res, next) ->
 
 app.get "/#{root}symbol/", isLoggedIn, (req, res, next) ->
   res.render 'symbols', {menu: 'symbol', title: 'Symbols', symbols: symbDb.getAllRecords()}
+	

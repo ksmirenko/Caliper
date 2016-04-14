@@ -3,3 +3,6 @@
 /pool
 *.swp
 *.log
+
+# Custom launch script
+launch.bat

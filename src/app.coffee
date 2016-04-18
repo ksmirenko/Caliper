@@ -6,6 +6,7 @@ bodyParser = require 'body-parser'
 passport = require 'passport'
 passportLocal = require 'passport-local'
 randomstring = require 'randomstring'
+
 #local requirements
 reader = require './reader'
 saver = require './saver'
@@ -15,12 +16,10 @@ WebHook = require './webhook'
 symbols = require './symbols'
 GitHub        = require 'github-releases'
 
-# THIS SHOULD BE CHANGED BEFORE RUNNING CALIPER
-secret_session_string = process.env.CALIPER_SERVER_SECRET or randomstring.generate()
+secret_session_string = process.env.OPENSHIFT_SECRET_TOKEN or randomstring.generate()
 secret_admin_password = process.env.CALIPER_ADMIN_PASSWORD or randomstring.generate()
 api_key = process.env.CALIPER_API_KEY or randomstring.generate()
 
-# TODO change this to hit a database of users
 # this is very temporary. just to get basic auth off the ground
 localStrategy = new passportLocal.Strategy (username, password, callback) ->
   return callback null, false, message: "Incorrect Username" unless username is "admin"
@@ -40,27 +39,28 @@ isLoggedIn = (req, res, next) ->
   return next() if req.isAuthenticated()
   res.redirect("/login_page")
 
+# server setup and startup
 app = express()
 db = new Database
 symbDb = new SymbolDatabase
 webhook = new WebHook(symbDb)
 
 startServer = () ->
-  ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1"
+  ipaddress = process.env.OPENSHIFT_NODEJS_IP ? "127.0.0.1"
   port = process.env.OPENSHIFT_NODEJS_PORT ? 80
-  app.listen ipaddress, port
+  app.listen port, ipaddress
   console.log "Caliper started!"
   console.log "Listening on port #{port}"
-  console.log "Using random admin password: #{secret_admin_password}" if secret_admin_password != process.env.CALIPER_ADMIN_PASSWORD
-  console.log "Using random api_key: #{api_key}" if api_key != process.env.CALIPER_API_KEY
-  console.log "Using provided github server token" if process.env.CALIPER_SERVER_TOKEN
+  console.log "Using admin password: #{secret_admin_password}"
+  console.log "Using api_key: #{api_key}"
+  console.log "Using provided OpenShift server token" if process.env.OPENSHIFT_SECRET_TOKEN
+  console.log "Using randomly generated server token: #{secret_session_string}" if not process.env.OPENSHIFT_SECRET_TOKEN
 
 db.on 'load', ->
   console.log "crash db ready"
   symbDb.on 'load', ->
     console.log "symb db ready"
     startServer()
-
 
 app.set 'views', path.resolve(__dirname, '..', 'views')
 app.set 'view engine', 'jade'
@@ -72,11 +72,13 @@ app.use (err, req, res, next) ->
 
 app.on 'error', (err)->
   console.log "Whoops #{err}"
+
 # set up session variables this is needed for AUTH
 app.use expressSession(secret: secret_session_string, resave: true, saveUninitialized: true)
 app.use passport.initialize()
 app.use passport.session()
 
+# server logic
 app.post '/webhook', (req, res, next) ->
   webhook.onRequest req
 
@@ -88,7 +90,7 @@ app.get '/fetch', (req, res, next) ->
 
   github = new GitHub
     repo: req.query.project
-    token: process.env.CALIPER_SERVER_TOKEN
+    token: process.env.OPENSHIFT_SECRET_TOKEN
 
   processRel = (rel, rest) ->
     console.log "Processing symbols from #{rel.name}..."

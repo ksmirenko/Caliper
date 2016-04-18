@@ -23,3 +23,14 @@ This intends to be a simple server for crash reports sent by
 
 ## Breakpad crash sending
 In the SendCrashReport function that breakpad provides, simply put "http://your.site/crash_upload".
+
+## Environment variables used
+### OpenShift variables:
+* OPENSHIFT_NODEJS_IP
+* OPENSHIFT_NODEJS_PORT
+* OPENSHIFT_SECRET_TOKEN
+Documentation can be found [here](https://developers.openshift.com/languages/nodejs/environment-variables.html) and [here](https://developers.openshift.com/managing-your-applications/environment-variables.html).
+### Custom variables:
+* CALIPER_ADMIN_PASSWORD - password for logging in as "admin". If not set, generated randomly.
+* CALIPER_API_KEY - API key for your server. If not set, generated randomly.
+* CALIPER_SERVER_ROOT - some outdated root path variable. If not set, empty.

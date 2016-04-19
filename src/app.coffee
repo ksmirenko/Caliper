@@ -7,7 +7,7 @@ passport = require 'passport'
 passportLocal = require 'passport-local'
 randomstring = require 'randomstring'
 
-#local requirements
+# local requirements
 reader = require './reader'
 saver = require './saver'
 Database = require './database'
@@ -16,11 +16,12 @@ WebHook = require './webhook'
 symbols = require './symbols'
 GitHub        = require 'github-releases'
 
+# setting up security keys
 secret_session_string = process.env.OPENSHIFT_SECRET_TOKEN or randomstring.generate()
 secret_admin_password = process.env.CALIPER_ADMIN_PASSWORD or randomstring.generate()
 api_key = process.env.CALIPER_API_KEY or randomstring.generate()
 
-# this is very temporary. just to get basic auth off the ground
+# basic auth
 localStrategy = new passportLocal.Strategy (username, password, callback) ->
   return callback null, false, message: "Incorrect Username" unless username is "admin"
   return callback null, false, message: "Incorrect Password" unless username is "admin" and password is secret_admin_password
@@ -62,6 +63,7 @@ db.on 'load', ->
     console.log "symb db ready"
     startServer()
 
+
 app.set 'views', path.resolve(__dirname, '..', 'views')
 app.set 'view engine', 'jade'
 app.use bodyParser.json()
@@ -73,7 +75,7 @@ app.use (err, req, res, next) ->
 app.on 'error', (err)->
   console.log "Whoops #{err}"
 
-# set up session variables this is needed for AUTH
+# set up session variables; this is needed for AUTH
 app.use expressSession(secret: secret_session_string, resave: true, saveUninitialized: true)
 app.use passport.initialize()
 app.use passport.session()
@@ -150,4 +152,4 @@ app.get "/#{root}view/:id", isLoggedIn, (req, res, next) ->
 
 app.get "/#{root}symbol/", isLoggedIn, (req, res, next) ->
   res.render 'symbols', {menu: 'symbol', title: 'Symbols', symbols: symbDb.getAllRecords()}
-	
+

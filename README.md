@@ -15,7 +15,3 @@ This intends to be a simple server for crash reports sent by [google-breakpad](h
 * Put your breakpad symbols under `pool/symbols/PDBNAME/PDBUNIQUEIDENTIFIER/PDBNAMEASSYM`
 * OR send a POST request to your server at /symbol_upload using google's symupload tool.
 * `node lib/app.js`
-
-## Breakpad crash sending
-
-In the SendCrashReport function that breakpad provides, simply put "http://your.site/crash_upload".

@@ -1,4 +1,4 @@
-# Server for Google Breakpad, adapted for [RedHat OpenShift](https://www.openshift.com/).
+## Server for Google Breakpad, adapted for [RedHat OpenShift](https://www.openshift.com/).
 
 This intends to be a simple server for crash reports sent by [google-breakpad](https://code.google.com/p/google-breakpad/). This version is adapted for deploying on OpenShift. For more details and deployment guide, please see [wiki](https://github.com/ksmirenko/breakpad-openshift-server/wiki).
 

@@ -114,18 +114,22 @@ app.get '/fetch', (req, res, next) ->
   res.end()
 
 app.post '/crash_upload', (req, res, next) ->
+  console.log "Crash upload request received."
   saver.saveRequest req, db, (err, filename) ->
     return next err if err?
-
     console.log 'saved', filename
     res.send path.basename(filename)
     res.end()
 
 # handle the sympol upload post command.
 app.post '/symbol_upload', isLoggedIn, (req, res, next) ->
+  console.log "Symbol upload request received."
   return symbols.saveSymbols req, (error, destination) ->
-    return next error if error?
-    console.log "Saved Symbols: #{destination}"
+    if error?
+      console.log "Error saving symbol!"
+      console.log error
+      return next error
+    console.log "Saved symbol: #{destination}"
     return res.end()
 
 root =

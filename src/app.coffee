@@ -121,8 +121,8 @@ app.post '/crash_upload', (req, res, next) ->
     res.send path.basename(filename)
     res.end()
 
-# handle the sympol upload post command.
-app.post '/symbol_upload', isLoggedIn, (req, res, next) ->
+# handle the symbol upload post command.
+app.post '/symbol_upload', (req, res, next) ->
   console.log "Symbol upload request received."
   return symbols.saveSymbols req, (error, destination) ->
     if error?

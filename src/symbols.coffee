@@ -4,7 +4,7 @@ mkdirp = require 'mkdirp'
 formidable = require 'formidable'
 
 # callback is of the form (error, destination).
-module.exports.saveSymbols = (req, callback) ->
+module.exports.saveSymbols = (req, symbDb, callback) ->
   form = new formidable.IncomingForm()
   return form.parse req, (error, fields, files) ->
     # return if this is a malformed request.
@@ -29,4 +29,12 @@ module.exports.saveSymbols = (req, callback) ->
       # copy the POST to destination.
       fs.copy files.symbol_file.path, destination, (error) ->
         return callback new Error("Cannot create file: #{destination}") if error?
-        return callback null, destination
+
+        if fields.version == null
+          console.log "Could not add symbol to database, no version provided"
+          return callback null, destination
+
+        symbDb.saveSymbol fields.version, files.symbol_file.name, (error) ->
+          return callback new Error("Cannot save symbol to database") if error?
+
+          return callback null, destination

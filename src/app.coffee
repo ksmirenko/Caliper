@@ -124,7 +124,7 @@ app.post '/crash_upload', (req, res, next) ->
 # handle the symbol upload post command.
 app.post '/symbol_upload', (req, res, next) ->
   console.log "Symbol upload request received."
-  return symbols.saveSymbols req, (error, destination) ->
+  return symbols.saveSymbols req, symbDb, (error, destination) ->
     if error?
       console.log "Error saving symbol!"
       console.log error

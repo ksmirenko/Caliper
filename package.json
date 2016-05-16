@@ -1,10 +1,16 @@
 {
   "name": "caliper",
   "description": "simple breakpad server/processor",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "bin": {
     "caliper": "bin/caliper"
   },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.githubusercontent.com/ksmirenko/breakpad-openshift-server/master/LICENSE"
+    }
+  ],
   "scripts": {
     "prepublish": "grunt coffee",
     "start" : "supervisor lib/app.js"
@@ -22,7 +28,6 @@
     "glob": "3.x",
     "jade": "~0.35.0",
     "method-override": "2.3.5",
-    "minidump": "0.9.0",
     "mkdirp": "~0.3.5",
     "node-uuid": "~1.4.1",
     "passport": "0.3.0",

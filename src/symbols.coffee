@@ -16,9 +16,10 @@ module.exports.saveSymbols = (req, symbDb, callback) ->
     # this puts files in a path of:
     # destination + fields.debug_file + debug_identifier
     output_file_name = fields.debug_file.replace ".pdb", ".sym"
-    # TODO: make this serialize-able
-    destination = "pool/symbols"
-    destination = path.join destination, fields.debug_file
+    folder_name = fields.debug_file.replace ".sym", ""
+    # TODO: make this serializeable
+    destination = path.join "pool", "symbols"
+    destination = path.join destination, folder_name
     destination = path.join destination, fields.debug_identifier
 
     # make the destination directory, and copy the POST'd symbol file.

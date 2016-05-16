@@ -49,7 +49,7 @@ webhook = new WebHook(symbDb)
 startServer = () ->
   ipaddress = process.env.OPENSHIFT_NODEJS_IP ? "127.0.0.1"
   port = process.env.OPENSHIFT_NODEJS_PORT ? 80
-  app.listen port, ipaddress
+  app.listen port#, ipaddress
   console.log "Caliper started!"
   console.log "Listening on port #{port}"
   console.log "Using admin password: #{secret_admin_password}"
@@ -136,7 +136,7 @@ root =
   if process.env.CALIPER_SERVER_ROOT?
     "#{process.env.CALIPER_SERVER_ROOT}/"
   else
-    ''
+    ""
 app.post "/login", passport.authenticate("local", successRedirect:"/#{root}", failureRedirect:"/login_page")
 
 app.get "/login_page", (req, res, next) ->

@@ -1,0 +1,8 @@
+#!/bin/bash
+npm install .
+export OPENSHIFT_NODEJS_PORT=3000
+export CALIPER_ADMIN_PASSWORD=caliperadmin
+export CALIPER_API_KEY=afkjaqwerbub
+export CALIPER_SERVER_SECRET=oibijonqweufb
+nodejs lib/app.js
+

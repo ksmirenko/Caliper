@@ -11,7 +11,7 @@ exports.saveRequest = (req, db, callback) ->
     mkdirp dist, (err) ->
       return callback new Error("Cannot create directory: #{dist}") if err?
 
-      filename = path.join dist, record.id
+      filename =  dist + "/" + record.id # to avoid path.join using backslashes
       fs.copy record.path, filename, (err) ->
         return callback new Error("Cannot create file: #{filename}") if err?
 

@@ -49,7 +49,10 @@ webhook = new WebHook(symbDb)
 startServer = () ->
   ipaddress = process.env.OPENSHIFT_NODEJS_IP ? "127.0.0.1"
   port = process.env.OPENSHIFT_NODEJS_PORT ? 80
-  app.listen port#, ipaddress
+  if process.env.OPENSHIFT_NODEJS_IP?
+    app.listen port, ipaddress
+  else
+    app.listen port
   console.log "Caliper started!"
   console.log "Listening on port #{port}"
   console.log "Using admin password: #{secret_admin_password}"

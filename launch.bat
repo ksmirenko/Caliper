@@ -1,4 +1,4 @@
-call npm install .
+rem call npm install .
 set OPENSHIFT_NODEJS_PORT=3000
 set CALIPER_ADMIN_PASSWORD=caliperadmin
 set CALIPER_API_KEY=ApiegNiIAidgI4n2tAPl
